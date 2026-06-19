@@ -22,6 +22,7 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'mad-pumpkin-limgrave',   name: 'Mad Pumpkin Head',                       location: 'Waypoint Ruins Cellar',             area: 'Limgrave',                   required: false, dlc: false },
   { id: 'patches',                name: 'Patches',                                location: 'Murkwater Cave',                    area: 'Limgrave',                   required: false, dlc: false },
   { id: 'guardian-golem',         name: 'Guardian Golem',                         location: 'Highroad Cave',                     area: 'Limgrave',                   required: false, dlc: false },
+  { id: 'stonedigger-limgrave',   name: 'Stonedigger Troll',                      location: 'Limgrave Tunnels',                  area: 'Limgrave',                   required: false, dlc: false },
   { id: 'crucible-stormhill',     name: 'Crucible Knight',                        location: 'Stormhill Evergaol',                area: 'Limgrave',                   required: false, dlc: false },
   { id: 'darriwil',               name: 'Bloodhound Knight Darriwil',             location: 'Forlorn Hound Evergaol',            area: 'Limgrave',                   required: false, dlc: false },
   { id: 'night-cavalry-limgrave', name: "Night's Cavalry",                        location: 'East Limgrave, Saintsbridge',       area: 'Limgrave',                   required: false, dlc: false },
@@ -57,9 +58,10 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'night-cavalry-liurnia',  name: "Night's Cavalry",                        location: 'Liurnia, Eastern Tablelands',       area: 'Liurnia of the Lakes',       required: false, dlc: false },
   { id: 'night-cavalry-liurnia2', name: "Night's Cavalry",                        location: 'Liurnia, Northern Tablelands',      area: 'Liurnia of the Lakes',       required: false, dlc: false },
   { id: 'tibia-liurnia',          name: 'Tibia Mariner',                          location: 'Liurnia, North of Academy Gate',    area: 'Liurnia of the Lakes',       required: false, dlc: false },
+  { id: 'erdtree-watchdog-cliff', name: 'Erdtree Burial Watchdog',                location: 'Cliffbottom Catacombs',             area: 'Liurnia of the Lakes',       required: false, dlc: false },
   { id: 'adan',                   name: 'Adan, Thief of Fire',                    location: "Malefactor's Evergaol",             area: 'Liurnia of the Lakes',       required: false, dlc: false },
   { id: 'bols',                   name: 'Bols, Carian Knight',                    location: "Cuckoo's Evergaol",                 area: 'Liurnia of the Lakes',       required: false, dlc: false },
-  { id: 'alecto',                 name: 'Alecto, Black Knife Ringleader',         location: "Ringleader's Evergaol",             area: 'Liurnia of the Lakes',       required: false, dlc: false },
+  { id: 'alecto',                 name: 'Alecto, Black Knife Ringleader',         location: "Ringleader's Evergaol",             area: 'Moonlight Altar',            required: false, dlc: false },
   { id: 'onyx-lord-royal',        name: 'Onyx Lord',                              location: 'Royal Grave Evergaol',              area: 'Liurnia of the Lakes',       required: false, dlc: false },
   { id: 'smarag',                 name: 'Glintstone Dragon Smarag',               location: 'Liurnia, Lake-Facing Cliffs',       area: 'Liurnia of the Lakes',       required: false, dlc: false },
   { id: 'magma-wyrm-makar',       name: 'Magma Wyrm Makar',                       location: 'Ruin-Strewn Precipice',             area: 'Liurnia of the Lakes',       required: false, dlc: false },
@@ -79,6 +81,7 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'putrid-avatar-caelid',   name: 'Putrid Avatar',                          location: 'Caelid, Minor Erdtree',             area: 'Caelid',                     required: false, dlc: false },
   { id: 'ekzykes',                name: 'Decaying Ekzykes',                       location: 'Caelid Highway South',              area: 'Caelid',                     required: false, dlc: false },
   { id: 'oneil',                  name: "Commander O'Neil",                        location: 'Swamp of Aeonia',                   area: 'Caelid',                     required: false, dlc: false },
+  { id: 'night-cavalry-caelid',   name: "Night's Cavalry",                        location: 'Caelid Highway South',              area: 'Caelid',                     required: false, dlc: false },
   { id: 'radahn',                 name: 'Starscourge Radahn',                     location: 'Wailing Dunes, Redmane Castle',     area: 'Caelid',                     required: false, dlc: false },
 
   // ── DRAGONBARROW ──────────────────────────────────────────────────────────
@@ -90,6 +93,8 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'black-blade-kindred-db', name: 'Black Blade Kindred',                    location: 'Dragonbarrow Fork',                 area: 'Dragonbarrow',               required: false, dlc: false },
   { id: 'godskin-divine-tower',   name: 'Godskin Apostle',                        location: 'Divine Tower of Caelid',            area: 'Dragonbarrow',               required: false, dlc: false },
   { id: 'greyll',                 name: 'Flying Dragon Greyll',                   location: 'Farum Greatbridge',                 area: 'Dragonbarrow',               required: false, dlc: false },
+  { id: 'death-rite-dragonbarrow',name: 'Death Rite Bird',                        location: 'Dragonbarrow, West (night)',         area: 'Dragonbarrow',               required: false, dlc: false },
+  { id: 'bell-bearing-dragon',    name: 'Bell Bearing Hunter',                    location: "Isolated Merchant's Shack, Dragonbarrow", area: 'Dragonbarrow',       required: false, dlc: false },
 
   // ── ALTUS PLATEAU ─────────────────────────────────────────────────────────
   { id: 'watchdog-altus',         name: 'Erdtree Burial Watchdog',                location: 'Wyndham Catacombs',                 area: 'Altus Plateau',              required: false, dlc: false },
@@ -111,6 +116,7 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'elemer',                 name: 'Elemer of the Briar',                    location: 'The Shaded Castle',                 area: 'Altus Plateau',              required: false, dlc: false },
   { id: 'demi-queen-gilika',      name: 'Demi-Human Queen Gilika',                location: 'Lux Ruins',                         area: 'Altus Plateau',              required: false, dlc: false },
   { id: 'bell-bearing-altus',     name: 'Bell Bearing Hunter',                    location: "Hermit Merchant's Shack, Altus",    area: 'Altus Plateau',              required: false, dlc: false },
+  { id: 'stonedigger-altus',      name: 'Stonedigger Troll',                      location: 'Old Altus Tunnel',                  area: 'Altus Plateau',              required: false, dlc: false },
   { id: 'night-cavalry-altus',    name: "Night's Cavalry",                        location: 'Altus Plateau, East Bridge',        area: 'Altus Plateau',              required: false, dlc: false },
 
   // ── CAPITAL OUTSKIRTS ─────────────────────────────────────────────────────
@@ -150,6 +156,7 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'regal-ancestor',         name: 'Regal Ancestor Spirit',                  location: 'Nokron, Eternal City',              area: 'Nokron',                     required: false, dlc: false },
   { id: 'mimic-tear',             name: 'Mimic Tear',                             location: "Night's Sacred Ground, Nokron",    area: 'Nokron',                     required: false, dlc: false },
   { id: 'spirit-caller-nokstella',name: 'Spirit-Caller Snail',                    location: 'Nokstella Waterfall Basin',         area: 'Ainsel River',               required: false, dlc: false },
+  { id: 'baleful-shadow',         name: 'Baleful Shadow',                         location: 'Ainsel River Main',                 area: 'Ainsel River',               required: false, dlc: false },
   { id: 'mohg-lord',              name: 'Mohg, Lord of Blood',                    location: 'Mohgwyn Palace',                    area: 'Mohgwyn Palace',             required: false, dlc: false },
   { id: 'fias-champions',         name: "Fia's Champions",                        location: 'Deeproot Depths',                   area: 'Deeproot Depths',            required: false, dlc: false },
   { id: 'crucible-siluria',       name: 'Crucible Knight Siluria',                location: 'Deeproot Depths',                   area: 'Deeproot Depths',            required: false, dlc: false },
@@ -162,6 +169,8 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'godskin-spiritcaller',   name: 'Godskin Apostle & Godskin Noble',        location: "Spiritcaller's Cave",               area: 'Mountaintops of the Giants', required: false, dlc: false },
   { id: 'borealis',               name: 'Borealis the Freezing Fog',              location: 'Freezing Lake',                     area: 'Mountaintops of the Giants', required: false, dlc: false },
   { id: 'niall',                  name: 'Commander Niall',                        location: 'Castle Sol',                        area: 'Mountaintops of the Giants', required: false, dlc: false },
+  { id: 'night-cavalry-mountaintops', name: "Night's Cavalry",                    location: 'Mountaintops, Road of Zamor',       area: 'Mountaintops of the Giants', required: false, dlc: false },
+  { id: 'death-rite-mountaintops',name: 'Death Rite Bird',                        location: 'Mountaintops, Minor Erdtree Church', area: 'Mountaintops of the Giants', required: false, dlc: false },
   { id: 'fire-giant',             name: 'Fire Giant',                             location: "Giants' Mountaintop Forge",         area: 'Mountaintops of the Giants', required: true,  dlc: false },
 
   // ── FORBIDDEN LANDS / APPROACHES ──────────────────────────────────────────
@@ -178,7 +187,7 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'misbegotten-crusader',   name: 'Misbegotten Crusader',                   location: 'Cave of the Forlorn',               area: 'Consecrated Snowfield',      required: false, dlc: false },
   { id: 'putrid-grave-duelist',   name: 'Putrid Grave Warden Duelist',            location: 'Consecrated Snowfield Catacombs',   area: 'Consecrated Snowfield',      required: false, dlc: false },
   { id: 'night-cavalry-snowfield',name: "Night's Cavalry (Duo)",                  location: 'Consecrated Snowfield, Road',       area: 'Consecrated Snowfield',      required: false, dlc: false },
-  { id: 'adula',                  name: 'Glintstone Dragon Adula',                location: 'Cathedral of Manus Celes',          area: 'Consecrated Snowfield',      required: false, dlc: false },
+  { id: 'adula',                  name: 'Glintstone Dragon Adula',                location: 'Cathedral of Manus Celes',          area: 'Moonlight Altar',            required: false, dlc: false },
 
   // ── MIQUELLA'S HALIGTREE ──────────────────────────────────────────────────
   { id: 'loretta-haligtree',      name: "Loretta, Knight of the Haligtree",       location: "Miquella's Haligtree",              area: "Miquella's Haligtree",       required: false, dlc: false },
@@ -200,6 +209,8 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'demi-swordmaster-onze',  name: 'Demi-Human Swordmaster Onze',            location: 'Gravesite Plain',                   area: 'Gravesite Plain',            required: false, dlc: true },
   { id: 'red-bear',               name: 'Red Bear',                               location: 'Gravesite Plain, Ruined Forge',     area: 'Gravesite Plain',            required: false, dlc: true },
   { id: 'ghostflame-dragon',      name: 'Ghostflame Dragon',                      location: 'Gravesite Plain',                   area: 'Gravesite Plain',            required: false, dlc: true },
+  { id: 'furnace-golem-gravesite', name: 'Furnace Golem',                         location: 'Gravesite Plain, Scorched Ruins',   area: 'Gravesite Plain',            required: false, dlc: true },
+  { id: 'furnace-golem-gravesite2',name: 'Furnace Golem',                         location: 'Gravesite Plain, Fog Rift Approach', area: 'Gravesite Plain',            required: false, dlc: true },
   { id: 'dancing-lion',           name: 'Divine Beast Dancing Lion',              location: 'Belurat Tower Settlement',          area: 'Gravesite Plain',            required: true,  dlc: true },
   { id: 'rellana',                name: 'Rellana, Twin Moon Knight',              location: 'Castle Ensis',                      area: 'Gravesite Plain',            required: true,  dlc: true },
 
@@ -213,6 +224,8 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'death-knight-dlc',       name: 'Death Knight',                           location: 'Scadu Altus, Ruined Forge',         area: 'Scadu Altus',                required: false, dlc: true },
   { id: 'rakshasa',               name: 'Rakshasa',                               location: 'Scadu Altus',                       area: 'Scadu Altus',                required: false, dlc: true },
   { id: 'ralva',                  name: 'Ralva the Great Red Bear',               location: 'Scadu Altus',                       area: 'Scadu Altus',                required: false, dlc: true },
+  { id: 'ancient-dragon-smithscript', name: 'Ancient Dragon Smithscript',         location: 'Ruined Forge Lava Intake',          area: 'Scadu Altus',                required: false, dlc: true },
+  { id: 'furnace-golem-scadu',    name: 'Furnace Golem',                          location: 'Scadu Altus, West of Shadow Keep',  area: 'Scadu Altus',                required: false, dlc: true },
   { id: 'messmer',                name: 'Messmer the Impaler',                    location: 'Shadow Keep Specimen Storehouse',   area: 'Scadu Altus',                required: true,  dlc: true },
   { id: 'scadutree-avatar',       name: 'Scadutree Avatar',                       location: 'Scaduview',                         area: 'Scadu Altus',                required: false, dlc: true },
   { id: 'fallingstar-scadu',      name: 'Fallingstar Beast',                      location: 'Scaduview',                         area: 'Scadu Altus',                required: false, dlc: true },
@@ -221,6 +234,7 @@ export const ALL_BOSSES: BossDefinition[] = [
 
   // ── DLC: ANCIENT RUINS OF RAUH ────────────────────────────────────────────
   { id: 'rugalea',                name: 'Rugalea the Great Red Bear',             location: 'Rauh Base',                         area: 'Ancient Ruins of Rauh',      required: false, dlc: true },
+  { id: 'furnace-golem-rauh',     name: 'Furnace Golem',                          location: 'Ancient Ruins of Rauh, Main Road',  area: 'Ancient Ruins of Rauh',      required: false, dlc: true },
   { id: 'romina',                 name: 'Romina, Saint of the Bud',               location: 'Church of the Bud',                 area: 'Ancient Ruins of Rauh',      required: true,  dlc: true },
 
   // ── DLC: CERULEAN COAST / STONE COFFIN ────────────────────────────────────
@@ -248,6 +262,8 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'dryleaf-dane',           name: 'Dryleaf Dane',                           location: 'Moorth Ruins',                      area: 'Scadu Altus',                required: false, dlc: true },
 
   // ── DLC: ENIR-ILIM ────────────────────────────────────────────────────────
+  { id: 'death-knight-enir-ilim', name: 'Death Knight',                           location: 'Enir-Ilim, Upper Floor',            area: 'Enir-Ilim',                  required: false, dlc: true },
+  { id: 'needle-knight-leda',     name: 'Needle Knight Leda',                     location: 'Enir-Ilim, Cleansing Chamber',      area: 'Enir-Ilim',                  required: false, dlc: true },
   { id: 'consort-radahn',         name: 'Promised Consort Radahn',                location: 'Enir-Ilim',                         area: 'Enir-Ilim',                  required: true,  dlc: true },
 ];
 
