@@ -3,6 +3,23 @@ import { useStore, todayISO } from '../store/context';
 import type { BuildSnapshot, StatBlock } from '../store/types';
 import { WEAPONS, TALISMANS, ALL_SPELLS, calcMemorySlots, isMoonOfNokstella, isWeaponSomber, getMaxUpgrade, MAX_MEMORY_STONES } from '../data/items';
 
+type StatKey = 'vigor' | 'mind' | 'endurance' | 'strength' | 'dexterity' | 'intelligence' | 'faith' | 'arcane';
+
+const CLASS_BASES: Record<string, { level: number } & Record<StatKey, number>> = {
+  'Vagabond':   { level: 9,  vigor: 15, mind: 10, endurance: 11, strength: 14, dexterity: 13, intelligence: 9,  faith: 9,  arcane: 7  },
+  'Warrior':    { level: 8,  vigor: 11, mind: 12, endurance: 11, strength: 10, dexterity: 16, intelligence: 10, faith: 8,  arcane: 9  },
+  'Hero':       { level: 7,  vigor: 14, mind: 9,  endurance: 12, strength: 16, dexterity: 9,  intelligence: 7,  faith: 8,  arcane: 11 },
+  'Bandit':     { level: 5,  vigor: 10, mind: 11, endurance: 10, strength: 9,  dexterity: 13, intelligence: 9,  faith: 8,  arcane: 14 },
+  'Astrologer': { level: 6,  vigor: 9,  mind: 15, endurance: 9,  strength: 8,  dexterity: 12, intelligence: 16, faith: 7,  arcane: 9  },
+  'Prophet':    { level: 7,  vigor: 10, mind: 14, endurance: 8,  strength: 11, dexterity: 10, intelligence: 7,  faith: 16, arcane: 10 },
+  'Samurai':    { level: 9,  vigor: 12, mind: 11, endurance: 13, strength: 12, dexterity: 15, intelligence: 9,  faith: 8,  arcane: 8  },
+  'Prisoner':   { level: 9,  vigor: 11, mind: 12, endurance: 11, strength: 11, dexterity: 14, intelligence: 14, faith: 6,  arcane: 9  },
+  'Confessor':  { level: 10, vigor: 10, mind: 13, endurance: 10, strength: 12, dexterity: 12, intelligence: 9,  faith: 14, arcane: 9  },
+  'Wretch':     { level: 1,  vigor: 10, mind: 10, endurance: 10, strength: 10, dexterity: 10, intelligence: 10, faith: 10, arcane: 10 },
+};
+
+const STAT_KEYS: StatKey[] = ['vigor', 'mind', 'endurance', 'strength', 'dexterity', 'intelligence', 'faith', 'arcane'];
+
 const STAT_DEFS = [
   { key: 'vigor',        label: 'VIG', color: '#8B2E2E' },
   { key: 'mind',         label: 'MND', color: '#7A9CB8' },
@@ -120,6 +137,30 @@ export default function BuildTracker() {
   }, 0);
   const slotsRemaining = totalMemorySlots - slotsUsed;
 
+  // Auto-calculate level from class base stats
+  const charClass = state.character?.class ?? 'Wretch';
+  const bases = CLASS_BASES[charClass] ?? CLASS_BASES['Wretch'];
+  const autoLevel = bases.level + STAT_KEYS.reduce((sum, k) => sum + Math.max(0, form.stats[k] - bases[k]), 0);
+
+  // Draft strings let the user clear/type freely; validated on blur
+  const [statDraft, setStatDraft] = useState<Partial<Record<StatKey, string>>>({});
+
+  function onStatChange(key: StatKey, raw: string) {
+    setStatDraft(d => ({ ...d, [key]: raw }));
+    const n = parseInt(raw, 10);
+    if (!isNaN(n)) setForm(f => ({ ...f, stats: { ...f.stats, [key]: n } }));
+  }
+
+  function onStatBlur(key: StatKey) {
+    const raw = statDraft[key];
+    if (raw !== undefined) {
+      const n = parseInt(raw, 10);
+      const clamped = isNaN(n) ? bases[key] : Math.max(1, Math.min(99, n));
+      setForm(f => ({ ...f, stats: { ...f.stats, [key]: clamped } }));
+      setStatDraft(d => { const next = { ...d }; delete next[key]; return next; });
+    }
+  }
+
   const filteredSpells = useMemo(() =>
     ALL_SPELLS.filter(s =>
       !form.spells.includes(s.name) &&
@@ -127,10 +168,6 @@ export default function BuildTracker() {
     ).slice(0, 30),
     [form.spells, spellSearch]
   );
-
-  function setStats(key: keyof StatBlock, value: number) {
-    setForm(f => ({ ...f, stats: { ...f.stats, [key]: Math.max(1, Math.min(99, value)) } }));
-  }
 
   function addSpell(name: string) {
     const spell = ALL_SPELLS.find(s => s.name === name);
@@ -147,9 +184,10 @@ export default function BuildTracker() {
   function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (!form.label.trim()) return;
-    saveBuild(form);
+    saveBuild({ ...form, stats: { ...form.stats, level: autoLevel } });
     setShowForm(false);
     setForm({ ...BLANK_BUILD, date: todayISO() });
+    setStatDraft({});
   }
 
   function getBuildMoonEquipped(build: BuildSnapshot) {
@@ -203,21 +241,24 @@ export default function BuildTracker() {
 
             {/* Stats */}
             <div>
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center justify-between mb-2">
                 <label className="font-body text-xs tracking-wide uppercase" style={{ color: '#5A5650' }}>Attributes</label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <span className="font-body text-xs" style={{ color: '#5A5650' }}>Level</span>
-                  <input type="number" min={1} max={713} value={form.stats.level} onChange={e => setStats('level', parseInt(e.target.value) || 1)}
-                    className="w-16 px-2 py-1 rounded-sm text-sm font-body border outline-none text-center focus:border-[#C9A876]"
-                    style={{ background: '#121212', borderColor: '#2A2925', color: '#C9A876' }} />
+                  <span className="font-display text-lg font-semibold" style={{ color: '#C9A876' }}>{autoLevel}</span>
+                  <span className="font-body text-[10px]" style={{ color: '#3A3835' }}>(auto)</span>
                 </div>
               </div>
               <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
                 {STAT_DEFS.map(({ key, label, color }) => (
                   <div key={key} className="text-center">
                     <p className="font-body text-[10px] mb-1" style={{ color: '#5A5650' }}>{label}</p>
-                    <input type="number" min={1} max={99} value={form.stats[key]}
-                      onChange={e => setStats(key, parseInt(e.target.value) || 1)}
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={statDraft[key] ?? String(form.stats[key])}
+                      onChange={e => onStatChange(key, e.target.value)}
+                      onBlur={() => onStatBlur(key)}
                       className="w-full px-1 py-1.5 rounded-sm text-sm font-body border outline-none text-center focus:border-[#C9A876]"
                       style={{ background: '#121212', borderColor: '#2A2925', color }} />
                   </div>
