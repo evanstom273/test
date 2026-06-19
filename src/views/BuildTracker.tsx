@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useStore, todayISO } from '../store/context';
 import type { BuildSnapshot, StatBlock } from '../store/types';
-import { WEAPONS, TALISMANS, ALL_SPELLS, calcMemorySlots, isMoonOfNokstella, isWeaponSomber, getMaxUpgrade, MAX_MEMORY_STONES } from '../data/items';
+import { WEAPONS, TALISMANS, ALL_SPELLS, calcMemorySlots, isMoonOfNokstella, isWeaponSomber, getMaxUpgrade, MAX_MEMORY_STONES, HELMS, CHESTS, GAUNTLETS_PIECES, LEGS_PIECES } from '../data/items';
 
 type StatKey = 'vigor' | 'mind' | 'endurance' | 'strength' | 'dexterity' | 'intelligence' | 'faith' | 'arcane';
 
@@ -112,7 +112,7 @@ function WeaponInput({
 const BLANK_BUILD: Omit<BuildSnapshot, 'id'> = {
   date: '', label: '',
   stats: { level: 1, vigor: 10, mind: 10, endurance: 10, strength: 10, dexterity: 10, intelligence: 10, faith: 10, arcane: 10 },
-  mainhand: '', offhand: '',
+  rightHand: ['', '', ''], leftHand: ['', '', ''],
   helm: '', chest: '', gauntlets: '', legs: '',
   talisman1: '—', talisman2: '—', talisman3: '—', talisman4: '—',
   cracked: 4, cerulean: 0,
@@ -121,11 +121,20 @@ const BLANK_BUILD: Omit<BuildSnapshot, 'id'> = {
   note: '',
 };
 
+const ARMOR_DATALISTS = [
+  { slot: 'helm',      id: 'dl-helm',   items: HELMS },
+  { slot: 'chest',     id: 'dl-chest',  items: CHESTS },
+  { slot: 'gauntlets', id: 'dl-gaunt',  items: GAUNTLETS_PIECES },
+  { slot: 'legs',      id: 'dl-legs',   items: LEGS_PIECES },
+] as const;
+
 export default function BuildTracker() {
-  const { state, saveBuild } = useStore();
+  const { state, saveBuild, updateBuild } = useStore();
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<Omit<BuildSnapshot, 'id'>>({ ...BLANK_BUILD, date: todayISO() });
   const [spellSearch, setSpellSearch] = useState('');
+  const [statDraft, setStatDraft] = useState<Partial<Record<StatKey, string>>>({});
 
   const currentBuild = state.builds.length > 0 ? state.builds[state.builds.length - 1] : null;
 
@@ -142,8 +151,25 @@ export default function BuildTracker() {
   const bases = CLASS_BASES[charClass] ?? CLASS_BASES['Wretch'];
   const autoLevel = bases.level + STAT_KEYS.reduce((sum, k) => sum + Math.max(0, form.stats[k] - bases[k]), 0);
 
-  // Draft strings let the user clear/type freely; validated on blur
-  const [statDraft, setStatDraft] = useState<Partial<Record<StatKey, string>>>({});
+  function startEdit(snapshot: BuildSnapshot) {
+    const { id, ...rest } = snapshot;
+    setForm({
+      ...rest,
+      rightHand: (rest.rightHand ?? ['', '', '']).concat(['', '', '']).slice(0, 3),
+      leftHand:  (rest.leftHand  ?? ['', '', '']).concat(['', '', '']).slice(0, 3),
+    });
+    setEditId(id);
+    setShowForm(true);
+    setStatDraft({});
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function cancelForm() {
+    setShowForm(false);
+    setEditId(null);
+    setForm({ ...BLANK_BUILD, date: todayISO() });
+    setStatDraft({});
+  }
 
   function onStatChange(key: StatKey, raw: string) {
     setStatDraft(d => ({ ...d, [key]: raw }));
@@ -184,10 +210,13 @@ export default function BuildTracker() {
   function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (!form.label.trim()) return;
-    saveBuild({ ...form, stats: { ...form.stats, level: autoLevel } });
-    setShowForm(false);
-    setForm({ ...BLANK_BUILD, date: todayISO() });
-    setStatDraft({});
+    const built = { ...form, stats: { ...form.stats, level: autoLevel } };
+    if (editId) {
+      updateBuild(editId, built);
+    } else {
+      saveBuild(built);
+    }
+    cancelForm();
   }
 
   function getBuildMoonEquipped(build: BuildSnapshot) {
@@ -210,7 +239,7 @@ export default function BuildTracker() {
               )}
             </div>
           </div>
-          <button onClick={() => setShowForm(!showForm)}
+          <button onClick={() => showForm ? cancelForm() : setShowForm(true)}
             className="px-4 py-2 rounded-sm border font-body text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A876] hover:border-[#C9A876] hover:text-[#C9A876]"
             style={{ borderColor: '#2A2925', color: '#5A5650', background: '#1A1A1A' }}>
             {showForm ? 'Cancel' : '+ Save Snapshot'}
@@ -220,7 +249,7 @@ export default function BuildTracker() {
         {/* ── SAVE FORM ─────────────────────────────────────────── */}
         {showForm && (
           <form onSubmit={handleSave} className="mb-8 rounded-sm border p-5 space-y-5" style={{ background: '#1A1A1A', borderColor: '#C9A876' }}>
-            <p className="font-body text-xs tracking-wide uppercase" style={{ color: '#5A5650' }}>New Build Snapshot</p>
+            <p className="font-body text-xs tracking-wide uppercase" style={{ color: '#5A5650' }}>{editId ? 'Edit Build Snapshot' : 'New Build Snapshot'}</p>
 
             {/* Label + Date */}
             <div className="grid grid-cols-2 gap-3">
@@ -269,23 +298,42 @@ export default function BuildTracker() {
             {/* Weapons */}
             <div>
               <p className="font-body text-xs tracking-wide uppercase mb-2" style={{ color: '#5A5650' }}>Weapons</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <WeaponInput slot="main" label="Right Hand" value={form.mainhand} onChange={v => setForm(f => ({ ...f, mainhand: v }))} />
-                <WeaponInput slot="off" label="Left Hand" value={form.offhand} onChange={v => setForm(f => ({ ...f, offhand: v }))} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <p className="font-body text-[10px] tracking-wide uppercase" style={{ color: '#C9A876' }}>Right Hand</p>
+                  {[0, 1, 2].map(i => (
+                    <WeaponInput key={`rh-${i}`} slot={`rh${i}`} label={`Slot ${i + 1}`}
+                      value={form.rightHand[i] ?? ''}
+                      onChange={v => setForm(f => { const a = [...f.rightHand]; a[i] = v; return { ...f, rightHand: a }; })} />
+                  ))}
+                </div>
+                <div className="space-y-2">
+                  <p className="font-body text-[10px] tracking-wide uppercase" style={{ color: '#9DB88A' }}>Left Hand</p>
+                  {[0, 1, 2].map(i => (
+                    <WeaponInput key={`lh-${i}`} slot={`lh${i}`} label={`Slot ${i + 1}`}
+                      value={form.leftHand[i] ?? ''}
+                      onChange={v => setForm(f => { const a = [...f.leftHand]; a[i] = v; return { ...f, leftHand: a }; })} />
+                  ))}
+                </div>
               </div>
               <p className="font-body text-[10px] mt-1" style={{ color: '#3A3835' }}>
-                S = Somber (max +10) · Normal max +25 · Type a name and use +/− to set upgrade level
+                S = Somber (max +10) · Normal max +25 · Up to 3 weapons per hand
               </p>
             </div>
 
             {/* Armour */}
             <div>
               <p className="font-body text-xs tracking-wide uppercase mb-2" style={{ color: '#5A5650' }}>Armour</p>
+              {ARMOR_DATALISTS.map(({ slot, id, items }) => (
+                <datalist key={id} id={id}>
+                  {items.map(p => <option key={p} value={p} />)}
+                </datalist>
+              ))}
               <div className="grid grid-cols-2 gap-2">
-                {(['helm', 'chest', 'gauntlets', 'legs'] as const).map(slot => (
+                {ARMOR_DATALISTS.map(({ slot, id }) => (
                   <div key={slot}>
                     <label className="block font-body text-[10px] tracking-wide uppercase mb-1" style={{ color: '#5A5650' }}>{slot}</label>
-                    <input type="text" value={form[slot]} onChange={e => setForm(f => ({ ...f, [slot]: e.target.value }))}
+                    <input type="text" list={id} value={form[slot]} onChange={e => setForm(f => ({ ...f, [slot]: e.target.value }))}
                       placeholder="—"
                       className={inputCls} style={inputStyle} />
                   </div>
@@ -420,7 +468,7 @@ export default function BuildTracker() {
             <button type="submit"
               className="w-full py-2.5 rounded-sm border font-display text-base font-semibold tracking-wide transition-all hover:bg-[#C9A876] hover:text-[#121212] hover:border-[#C9A876] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A876]"
               style={{ borderColor: '#C9A876', color: '#C9A876', background: 'transparent' }}>
-              Save Snapshot
+              {editId ? 'Update Snapshot' : 'Save Snapshot'}
             </button>
           </form>
         )}
@@ -460,8 +508,20 @@ export default function BuildTracker() {
               <div className="rounded-sm border p-5" style={{ background: '#1A1A1A', borderColor: '#2A2925' }}>
                 <h2 className="font-display text-xl font-semibold mb-4" style={{ color: '#E8E3D8' }}>Equipment</h2>
                 <div className="grid grid-cols-2 gap-2 mb-3">
-                  <EquipSlot label="Right Hand" value={currentBuild.mainhand} />
-                  <EquipSlot label="Left Hand" value={currentBuild.offhand} />
+                  <div className="p-3 rounded-sm border" style={{ background: '#121212', borderColor: '#2A2925' }}>
+                    <p className="font-body text-[10px] tracking-wide uppercase mb-1" style={{ color: '#C9A876' }}>Right Hand</p>
+                    {(currentBuild.rightHand ?? []).filter(Boolean).map((w, i) => (
+                      <p key={i} className="font-body text-xs leading-relaxed" style={{ color: '#E8E3D8' }}>{w}</p>
+                    ))}
+                    {!(currentBuild.rightHand ?? []).some(Boolean) && <p className="font-body text-xs" style={{ color: '#3A3835' }}>—</p>}
+                  </div>
+                  <div className="p-3 rounded-sm border" style={{ background: '#121212', borderColor: '#2A2925' }}>
+                    <p className="font-body text-[10px] tracking-wide uppercase mb-1" style={{ color: '#9DB88A' }}>Left Hand</p>
+                    {(currentBuild.leftHand ?? []).filter(Boolean).map((w, i) => (
+                      <p key={i} className="font-body text-xs leading-relaxed" style={{ color: '#E8E3D8' }}>{w}</p>
+                    ))}
+                    {!(currentBuild.leftHand ?? []).some(Boolean) && <p className="font-body text-xs" style={{ color: '#3A3835' }}>—</p>}
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <EquipSlot label="Helm" value={currentBuild.helm} />
@@ -546,7 +606,14 @@ export default function BuildTracker() {
                             {i === 0 && <span className="ml-2 text-xs font-body font-normal" style={{ color: '#5A5650' }}>current</span>}
                           </h3>
                         </div>
-                        <span className="font-body text-sm" style={{ color: '#5A5650' }}>Lv {snapshot.stats.level}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-body text-sm" style={{ color: '#5A5650' }}>Lv {snapshot.stats.level}</span>
+                          <button onClick={() => startEdit(snapshot)}
+                            className="px-2 py-0.5 rounded-sm border font-body text-xs transition-colors hover:border-[#C9A876] hover:text-[#C9A876]"
+                            style={{ borderColor: '#2A2925', color: '#5A5650', background: '#121212' }}>
+                            Edit
+                          </button>
+                        </div>
                       </div>
                       <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 mb-3">
                         {STAT_DEFS.map(({ key, label, color }) => (
@@ -557,9 +624,13 @@ export default function BuildTracker() {
                         ))}
                       </div>
                       <div className="flex items-center gap-3 flex-wrap text-xs font-body">
-                        {snapshot.mainhand && <span style={{ color: '#5A5650' }}>R: <span style={{ color: '#E8E3D8' }}>{snapshot.mainhand}</span></span>}
-                        {snapshot.mainhand && snapshot.offhand && <span style={{ color: '#3A3835' }}>·</span>}
-                        {snapshot.offhand && <span style={{ color: '#5A5650' }}>L: <span style={{ color: '#E8E3D8' }}>{snapshot.offhand}</span></span>}
+                        {(snapshot.rightHand ?? []).filter(Boolean).length > 0 && (
+                          <span style={{ color: '#5A5650' }}>R: <span style={{ color: '#E8E3D8' }}>{(snapshot.rightHand ?? []).filter(Boolean).join(', ')}</span></span>
+                        )}
+                        {(snapshot.rightHand ?? []).filter(Boolean).length > 0 && (snapshot.leftHand ?? []).filter(Boolean).length > 0 && <span style={{ color: '#3A3835' }}>·</span>}
+                        {(snapshot.leftHand ?? []).filter(Boolean).length > 0 && (
+                          <span style={{ color: '#5A5650' }}>L: <span style={{ color: '#E8E3D8' }}>{(snapshot.leftHand ?? []).filter(Boolean).join(', ')}</span></span>
+                        )}
                         {(snapshot.spells?.length ?? 0) > 0 && (
                           <span style={{ color: '#5A5650' }} className="ml-1">
                             · <span style={{ color: '#D4B87A' }}>{snapshot.spells!.length} spell{snapshot.spells!.length !== 1 ? 's' : ''}</span>

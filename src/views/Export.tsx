@@ -45,7 +45,9 @@ function toMarkdown(state: ReturnType<typeof useStore>['state']): string {
     lines.push('## Build History');
     for (const build of state.builds) {
       lines.push(`### ${build.label} (${build.date}) — Lv ${build.stats.level}`);
-      lines.push(`**Weapons:** ${build.mainhand || '—'} / ${build.offhand || '—'}`);
+      const rh = (build.rightHand ?? []).filter(Boolean).join(' / ') || '—';
+      const lh = (build.leftHand ?? []).filter(Boolean).join(' / ') || '—';
+      lines.push(`**Weapons:** R: ${rh} | L: ${lh}`);
       lines.push(`**Stats:** VIG ${build.stats.vigor} MND ${build.stats.mind} END ${build.stats.endurance} STR ${build.stats.strength} DEX ${build.stats.dexterity} INT ${build.stats.intelligence} FAI ${build.stats.faith} ARC ${build.stats.arcane}`);
       if (build.note) lines.push(`*${build.note}*`);
       lines.push('');

@@ -35,8 +35,8 @@ export interface BuildSnapshot {
   date: string;
   label: string;
   stats: StatBlock;
-  mainhand: string;
-  offhand: string;
+  rightHand: string[];
+  leftHand: string[];
   helm: string;
   chest: string;
   gauntlets: string;

@@ -294,48 +294,84 @@ export function getMaxUpgrade(somber: boolean): number {
 
 // ─── ARMOR SETS ──────────────────────────────────────────────────────────────
 
-export const ARMOR_SETS: string[] = [
-  // Base Game
-  'Alberich\'s', 'Albinauric', 'All-Knowing', 'Aristocrat', 'Astrologer',
-  'Azur\'s Glintstone', 'Bandit', 'Banished Knight', 'Battlemage', 'Beast Champion',
-  'Black Knife', 'Blackflame Monk', 'Blaidd\'s', 'Bloodhound Knight', 'Bloodsoaked',
-  'Blue Cloth', 'Blue Festive', 'Blue Silver', 'Briar', 'Bull-Goat',
-  'Carian Knight', 'Chain', 'Champion', 'Cleanrot', 'Commoner\'s',
-  'Confessor', 'Consort\'s', 'Crucible Axe', 'Crucible Tree', 'Cuckoo Knight',
-  'Depraved Perfumer', 'Drake Knight', 'Duelist', 'Eccentric', 'Elden Lord',
-  'Errant Sorcerer', 'Exile', 'Festive', 'Fia\'s', 'Finger Maiden',
-  'Fingerprint', 'Fire Monk', 'Fire Prelate', 'Fur', 'Gelmir Knight',
-  'General Radahn', 'Godrick Knight', 'Godskin Apostle', 'Godskin Noble', 'Goldmask\'s',
-  'Guardian', 'Guilty', 'Haligtree Knight', 'High Page', 'Highwayman',
-  'Hoslow\'s', 'House Marais', 'Iron', 'Juvenile Scholar', 'Kaiden',
-  'Knight', 'Land of Reeds', 'Lazuli Sorcerer', 'Leather', 'Leyndell Knight',
-  'Lionel\'s', 'Lusat\'s', 'Malenia\'s', 'Malformed Dragon', 'Maliketh\'s',
-  'Millicent\'s', 'Mushroom', 'Night Maiden', 'Night\'s Cavalry', 'Noble\'s',
-  'Nox Monk', 'Nox Swordstress', 'Old Aristocrat', 'Omen', 'Omenkiller',
-  'Page', 'Perfumer', 'Preceptor\'s', 'Prisoner', 'Prophet',
-  'Queen of the Full Moon', 'Raging Wolf', 'Raptor\'s', 'Redmane Knight', 'Ronin\'s',
-  'Rotten Duelist', 'Royal Knight', 'Royal Remains', 'Ruler\'s', 'Sage',
-  'Sanguine Noble', 'Scaled', 'Snow Witch', 'Spellblade', 'Traveler\'s',
-  'Traveling Maiden', 'Tree Sentinel', 'Twinned', 'Vagabond Knight', 'Veteran\'s',
-  'Vulgar Militia', 'War Surgeon', 'White Reed', 'Zamor',
-  // DLC
-  'Ansbach\'s', 'Ascetic\'s', 'Black Knight', 'Dancer\'s', 'Dane\'s',
-  'Death Knight', 'Divine Beast', 'Divine Bird', 'Fire Knight', 'Freyja\'s',
-  'Gaius\'s', 'Gravebird', 'High Priest', 'Horned Warrior', 'Hornsent',
-  'Igon\'s', 'Iron Rivet', 'Highland Warrior', 'Messmer\'s', 'Night (DLC)',
-  'Oathseeker Knight', 'Rakshasa', 'Rellana\'s', 'Solitude', 'Thiollier\'s',
-  'Verdigris', 'Young Lion\'s',
+export interface ArmorSetData {
+  name: string;
+  helm: string;
+  chest: string;
+  gauntlets: string;
+  legs: string;
+  dlc?: boolean;
+}
+
+export const ARMOR_SETS_DATA: ArmorSetData[] = [
+  { name: 'Vagabond Knight',   helm: 'Vagabond Knight Helm',         chest: 'Vagabond Knight Armor',         gauntlets: 'Vagabond Knight Gauntlets',   legs: 'Vagabond Knight Greaves' },
+  { name: 'Knight',            helm: 'Knight Helm',                  chest: 'Knight Armor',                  gauntlets: 'Knight Gauntlets',            legs: 'Knight Greaves' },
+  { name: 'Banished Knight',   helm: 'Banished Knight Helm',         chest: 'Banished Knight Armor',         gauntlets: 'Banished Knight Gauntlets',   legs: 'Banished Knight Greaves' },
+  { name: 'Confessor',         helm: 'Confessor Hood',               chest: 'Confessor Armor',               gauntlets: 'Confessor Gloves',            legs: 'Confessor Boots' },
+  { name: 'Crucible',          helm: 'Crucible Helm',                chest: 'Crucible Armor',                gauntlets: 'Crucible Gauntlets',          legs: 'Crucible Greaves' },
+  { name: 'Crucible Axe',      helm: 'Crucible Axe Helm',           chest: 'Crucible Axe Armor',            gauntlets: 'Crucible Gauntlets',          legs: 'Crucible Greaves' },
+  { name: 'Crucible Tree',     helm: 'Crucible Tree Helm',          chest: 'Crucible Tree Armor',           gauntlets: 'Crucible Gauntlets',          legs: 'Crucible Greaves' },
+  { name: 'Tree Sentinel',     helm: 'Tree Sentinel Helm',          chest: 'Tree Sentinel Armor',           gauntlets: 'Tree Sentinel Gauntlets',     legs: 'Tree Sentinel Greaves' },
+  { name: "Veteran's",         helm: "Veteran's Helm",              chest: "Veteran's Armor",               gauntlets: "Veteran's Gauntlets",         legs: "Veteran's Greaves" },
+  { name: 'Cleanrot',          helm: 'Cleanrot Helm',               chest: 'Cleanrot Armor',                gauntlets: 'Cleanrot Gauntlets',          legs: 'Cleanrot Greaves' },
+  { name: 'Blackflame Monk',   helm: 'Blackflame Monk Hood',        chest: 'Blackflame Monk Armor',         gauntlets: 'Blackflame Monk Gauntlets',   legs: 'Blackflame Monk Greaves' },
+  { name: "Ronin's",           helm: "Ronin's Crown",               chest: "Ronin's Armor",                 gauntlets: "Ronin's Gauntlets",           legs: "Ronin's Greaves" },
+  { name: 'Redmane Knight',    helm: 'Redmane Knight Helm',         chest: 'Redmane Knight Armor',          gauntlets: 'Redmane Knight Gauntlets',    legs: 'Redmane Knight Greaves' },
+  { name: 'Godrick Knight',    helm: 'Godrick Knight Helm',         chest: 'Godrick Knight Armor',          gauntlets: 'Godrick Knight Gauntlets',    legs: 'Godrick Knight Greaves' },
+  { name: 'Fire Monk',         helm: 'Fire Monk Hood',              chest: 'Fire Monk Armor',               gauntlets: 'Fire Monk Gauntlets',         legs: 'Fire Monk Greaves' },
+  { name: 'Fire Knight',       helm: 'Fire Knight Helm',            chest: 'Fire Knight Armor',             gauntlets: 'Fire Knight Gauntlets',       legs: 'Fire Knight Greaves' },
+  { name: 'Alberich',          helm: "Alberich's Pointed Hat",      chest: "Alberich's Robe",               gauntlets: "Alberich's Bracers",          legs: "Alberich's Trousers" },
+  { name: 'Carian Knight',     helm: 'Carian Knight Helm',          chest: 'Carian Knight Armor',           gauntlets: 'Carian Knight Gauntlets',     legs: 'Carian Knight Greaves' },
+  { name: 'Astrologer',        helm: 'Astrologer Hood',             chest: 'Astrologer Robe',               gauntlets: 'Astrologer Gloves',           legs: 'Astrologer Trousers' },
+  { name: 'Prophet',           helm: 'Prophet Blindfold',           chest: 'Prophet Robe',                  gauntlets: 'Prophet Gloves',              legs: 'Prophet Trousers' },
+  { name: 'Land of Reeds',     helm: 'Land of Reeds Helm',          chest: 'Land of Reeds Armor',           gauntlets: 'Land of Reeds Gauntlets',     legs: 'Land of Reeds Greaves' },
+  { name: 'Blue Silver',       helm: 'Blue Silver Mail Hood',       chest: 'Blue Silver Mail',              gauntlets: 'Blue Silver Bracelets',       legs: 'Blue Silver Waistcloth' },
+  { name: 'Champion',          helm: 'Iron Helm',                   chest: 'Champion Pauldron',             gauntlets: 'Champion Bracers',            legs: 'Champion Gaiters' },
+  { name: 'Finger Maiden',     helm: 'Finger Maiden Fillet',        chest: 'Finger Maiden Robe',            gauntlets: 'Finger Maiden Gloves',        legs: 'Finger Maiden Shoes' },
+  { name: "Prisoner's",        helm: 'Iron Mask',                   chest: "Prisoner's Clothing",           gauntlets: "Prisoner's Trousers",         legs: '—' },
+  { name: 'Godskin Apostle',   helm: 'Godskin Apostle Hood',        chest: 'Godskin Apostle Robe',          gauntlets: 'Godskin Apostle Bracelets',   legs: 'Godskin Apostle Trousers' },
+  { name: 'Godskin Noble',     helm: 'Godskin Noble Hood',          chest: 'Godskin Noble Robe',            gauntlets: 'Godskin Noble Bracelets',     legs: 'Godskin Noble Trousers' },
+  { name: 'Scaled',            helm: 'Scaled Helm',                 chest: 'Scaled Armor',                  gauntlets: 'Scaled Gauntlets',            legs: 'Scaled Greaves' },
+  { name: 'Drake Knight',      helm: 'Drake Knight Helm',           chest: 'Drake Knight Armor',            gauntlets: 'Drake Knight Gauntlets',      legs: 'Drake Knight Greaves' },
+  { name: 'Malformed Dragon',  helm: 'Malformed Dragon Helm',       chest: 'Malformed Dragon Armor',        gauntlets: 'Malformed Dragon Gauntlets',  legs: 'Malformed Dragon Greaves' },
+  { name: 'Bull-Goat',         helm: 'Bull-Goat Helm',              chest: "Bull-Goat Armor",               gauntlets: 'Bull-Goat Gauntlets',         legs: 'Bull-Goat Greaves' },
+  { name: "Hoslow's",          helm: "Hoslow's Helm",               chest: "Hoslow's Armor",                gauntlets: "Hoslow's Gauntlets",          legs: "Hoslow's Greaves" },
+  { name: "Blaidd's",          helm: "Blaidd's Helm",               chest: "Blaidd's Armor",                gauntlets: "Blaidd's Gauntlets",          legs: "Blaidd's Greaves" },
+  { name: 'Royal Remains',     helm: 'Royal Remains Helm',          chest: 'Royal Remains Armor',           gauntlets: 'Royal Remains Gauntlets',     legs: 'Royal Remains Greaves' },
+  { name: 'Raging Wolf',       helm: 'Raging Wolf Helm',            chest: 'Raging Wolf Armor',             gauntlets: 'Raging Wolf Gauntlets',       legs: 'Raging Wolf Greaves' },
+  { name: 'Radahn Soldier',    helm: 'Radahn Soldier Helm',         chest: 'Radahn Soldier Armor',          gauntlets: 'Radahn Soldier Gauntlets',    legs: 'Radahn Soldier Greaves' },
+  { name: "Radahn's",          helm: "Radahn's Redmane Helm",       chest: "Radahn's Lion Armor",           gauntlets: "Radahn's Gauntlets",          legs: "Radahn's Greaves" },
+  { name: "Maliketh's",        helm: "Maliketh's Helm",             chest: "Maliketh's Armor",              gauntlets: "Maliketh's Gauntlets",        legs: "Maliketh's Greaves" },
+  { name: 'Gelmir Knight',     helm: 'Gelmir Knight Helm',          chest: 'Gelmir Knight Armor',           gauntlets: 'Gelmir Knight Gauntlets',     legs: 'Gelmir Knight Greaves' },
+  { name: 'Perfumer',          helm: 'Perfumer Hood',               chest: 'Perfumer Robe',                 gauntlets: 'Perfumer Gloves',             legs: 'Perfumer Sarong' },
+  { name: 'Zamor',             helm: 'Zamor Crown',                 chest: 'Zamor Armor',                   gauntlets: 'Zamor Bracelets',             legs: 'Zamor Legwraps' },
+  { name: 'Snow Witch',        helm: 'Snow Witch Hat',              chest: 'Snow Witch Robe',               gauntlets: 'Snow Witch Skirt',            legs: '—' },
+  { name: 'Spellblade',        helm: "Spellblade's Pointed Hat",    chest: "Spellblade's Traveling Attire", gauntlets: "Spellblade's Gloves",         legs: "Spellblade's Boots" },
+  { name: 'Black Knife',       helm: 'Black Knife Hood',            chest: 'Black Knife Armor',             gauntlets: 'Black Knife Gauntlets',       legs: 'Black Knife Greaves' },
+  { name: 'Mushroom',          helm: 'Mushroom Head',               chest: 'Mushroom Body',                 gauntlets: 'Mushroom Arms',               legs: 'Mushroom Legs' },
+  { name: 'Omen',              helm: 'Omen Helm',                   chest: 'Omen Armor',                    gauntlets: 'Omen Gauntlets',              legs: 'Omen Greaves' },
+  { name: "Twinned",           helm: 'Twinned Helm',                chest: 'Twinned Armor',                 gauntlets: 'Twinned Gauntlets',           legs: 'Twinned Leggings' },
+  { name: 'White Reed',        helm: 'White Reed Helm',             chest: 'White Reed Armor',              gauntlets: 'White Reed Gauntlets',        legs: 'White Reed Greaves' },
+  { name: "Fia's",             helm: "Fia's Hood",                  chest: "Fia's Robe",                    gauntlets: "Fia's Hands",                 legs: "Fia's Skirt" },
+  { name: 'Hierodas',          helm: 'Hierodas Glintstone Crown',   chest: 'No chest piece',                gauntlets: '—',                           legs: '—' },
+  { name: 'Twinsage',          helm: 'Twinsage Glintstone Crown',   chest: '—',                             gauntlets: '—',                           legs: '—' },
+  { name: 'Olivinus',          helm: 'Olivinus Glintstone Crown',   chest: '—',                             gauntlets: '—',                           legs: '—' },
+  { name: 'Haima',             helm: 'Haima Glintstone Crown',      chest: '—',                             gauntlets: '—',                           legs: '—' },
+  { name: 'Lazuli',            helm: 'Lazuli Glintstone Crown',     chest: '—',                             gauntlets: '—',                           legs: '—' },
+  { name: 'Graven-School',     helm: 'Graven-School Talisman',      chest: '—',                             gauntlets: '—',                           legs: '—' },
+  // DLC sets
+  { name: 'Messmer Soldier',   helm: 'Messmer Soldier Helm',        chest: 'Messmer Soldier Armor',         gauntlets: 'Messmer Soldier Gauntlets',   legs: 'Messmer Soldier Greaves',   dlc: true },
+  { name: 'Scorpion Knight',   helm: 'Scorpion Knight Helm',        chest: 'Scorpion Knight Armor',         gauntlets: 'Scorpion Knight Gauntlets',   legs: 'Scorpion Knight Greaves',   dlc: true },
+  { name: 'Divine Bird Warrior', helm: 'Divine Bird Warrior Helm',  chest: 'Divine Bird Warrior Feathers',  gauntlets: 'Divine Bird Warrior Gauntlets', legs: 'Divine Bird Warrior Greaves', dlc: true },
+  { name: 'Verdigris',         helm: 'Verdigris Helm',              chest: 'Verdigris Armor',               gauntlets: 'Verdigris Gauntlets',         legs: 'Verdigris Greaves',         dlc: true },
+  { name: "Thiollier's",       helm: "Thiollier's Garb",            chest: "Thiollier's Garb",              gauntlets: "Thiollier's Gloves",          legs: "Thiollier's Trousers",      dlc: true },
+  { name: 'Ancient Dragon Knight', helm: 'Ancient Dragon Knight Helm', chest: 'Ancient Dragon Knight Armor', gauntlets: 'Ancient Dragon Knight Gauntlets', legs: 'Ancient Dragon Knight Greaves', dlc: true },
 ];
 
-const ARMOR_PIECES = ['Helm', 'Chest', 'Gauntlets', 'Greaves'];
-
-export function getArmorPieces(set: string): Record<string, string> {
-  const result: Record<string, string> = {};
-  for (const piece of ARMOR_PIECES) {
-    result[piece] = `${set} ${piece === 'Helm' ? 'Helm' : piece === 'Chest' ? 'Armor' : piece === 'Gauntlets' ? 'Gauntlets' : 'Greaves'}`;
-  }
-  return result;
-}
+export const HELMS       = ['— (bare head)', ...ARMOR_SETS_DATA.map(s => s.helm).filter(p => p !== '—')];
+export const CHESTS      = ['—',             ...ARMOR_SETS_DATA.map(s => s.chest).filter(p => p !== '—')];
+export const GAUNTLETS_PIECES = ['— (bare hands)', ...ARMOR_SETS_DATA.map(s => s.gauntlets).filter(p => p !== '—')];
+export const LEGS_PIECES = ['—',             ...ARMOR_SETS_DATA.map(s => s.legs).filter(p => p !== '—')];
 
 // ─── TALISMANS ───────────────────────────────────────────────────────────────
 
@@ -434,6 +470,8 @@ export const SORCERIES: SpellEntry[] = [
   { name: 'Loretta\'s Greatbow',          fp: 20, slots: 1, type: 'sorcery', school: 'Glintstone' },
   { name: 'Loretta\'s Mastery',           fp: 55, slots: 2, type: 'sorcery', school: 'Glintstone' },
   { name: 'Shard Spiral',                 fp: 14, slots: 1, type: 'sorcery', school: 'Glintstone' },
+  { name: 'Magic Glintblade',           fp: 12, slots: 1, type: 'sorcery', school: 'Glintstone' },
+  { name: 'Glintstone Stars',           fp: 11, slots: 1, type: 'sorcery', school: 'Glintstone' },
   // Carian
   { name: 'Carian Slicer',                fp: 4,  slots: 1, type: 'sorcery', school: 'Carian' },
   { name: 'Carian Greatsword',            fp: 12, slots: 1, type: 'sorcery', school: 'Carian' },
@@ -445,6 +483,7 @@ export const SORCERIES: SpellEntry[] = [
   { name: 'Rennala\'s Full Moon',         fp: 47, slots: 2, type: 'sorcery', school: 'Carian' },
   { name: 'Carian Retaliation',           fp: 5,  slots: 1, type: 'sorcery', school: 'Carian' },
   { name: 'Carian Affinity',              fp: 18, slots: 1, type: 'sorcery', school: 'Carian' },
+  { name: 'Greatblade Phalanx',         fp: 30, slots: 2, type: 'sorcery', school: 'Carian' },
   // Gravity
   { name: 'Rock Sling',                   fp: 18, slots: 1, type: 'sorcery', school: 'Gravity' },
   { name: 'Gravity Well',                 fp: 12, slots: 1, type: 'sorcery', school: 'Gravity' },
@@ -454,6 +493,7 @@ export const SORCERIES: SpellEntry[] = [
   { name: 'Stars of Ruin',                fp: 40, slots: 2, type: 'sorcery', school: 'Gravity' },
   { name: 'Terra Magica',                 fp: 20, slots: 1, type: 'sorcery', school: 'Gravity' },
   { name: 'Founding Rain of Stars',       fp: 32, slots: 2, type: 'sorcery', school: 'Gravity' },
+  { name: 'Star Shower',                fp: 16, slots: 1, type: 'sorcery', school: 'Gravity' },
   // Night
   { name: 'Night Shard',                  fp: 7,  slots: 1, type: 'sorcery', school: 'Night' },
   { name: 'Ambush Shard',                 fp: 13, slots: 1, type: 'sorcery', school: 'Night' },
@@ -511,6 +551,7 @@ export const INCANTATIONS: SpellEntry[] = [
   { name: 'Magic Fortification',           fp: 25, slots: 1, type: 'incantation', school: 'Erdtree' },
   { name: 'Lightning Fortification',       fp: 30, slots: 1, type: 'incantation', school: 'Erdtree' },
   { name: 'Flame Fortification',           fp: 15, slots: 1, type: 'incantation', school: 'Erdtree' },
+  { name: "Lord's Divine Fortification", fp: 30, slots: 1, type: 'incantation', school: 'Erdtree' },
   // Order / Golden Order
   { name: 'Order\'s Blade',               fp: 30, slots: 1, type: 'incantation', school: 'Golden Order' },
   { name: 'Law of Causality',              fp: 25, slots: 1, type: 'incantation', school: 'Golden Order' },
@@ -530,6 +571,11 @@ export const INCANTATIONS: SpellEntry[] = [
   { name: 'Greyoll\'s Roar',              fp: 55, slots: 2, type: 'incantation', school: 'Dragon Communion' },
   { name: 'Theodorix\'s Magma',           fp: 50, slots: 2, type: 'incantation', school: 'Dragon Communion' },
   { name: 'Glintstone Breath',            fp: 28, slots: 1, type: 'incantation', school: 'Dragon Communion' },
+  { name: 'Dragonclaw',                 fp: 26, slots: 1, type: 'incantation', school: 'Dragon Communion' },
+  { name: 'Dragonmaw',                  fp: 23, slots: 1, type: 'incantation', school: 'Dragon Communion' },
+  { name: 'Dragonice',                  fp: 28, slots: 1, type: 'incantation', school: 'Dragon Communion' },
+  { name: 'Dragonscale Roar',           fp: 28, slots: 1, type: 'incantation', school: 'Dragon Communion' },
+  { name: 'Magma Breath',               fp: 18, slots: 1, type: 'incantation', school: 'Dragon Communion' },
   // Dragon Cult / Lightning
   { name: 'Lightning Spear',              fp: 18, slots: 1, type: 'incantation', school: 'Dragon Cult' },
   { name: 'Honed Bolt',                   fp: 14, slots: 1, type: 'incantation', school: 'Dragon Cult' },
@@ -548,6 +594,11 @@ export const INCANTATIONS: SpellEntry[] = [
   { name: 'Giantsflame Take Thee',        fp: 36, slots: 1, type: 'incantation', school: "Giants' Flame" },
   { name: 'Flame of the Fell God',        fp: 34, slots: 2, type: 'incantation', school: "Giants' Flame" },
   { name: 'Fire\'s Deadly Sin',           fp: 15, slots: 1, type: 'incantation', school: "Giants' Flame" },
+  // Fire Monk
+  { name: 'Catch Flame',                fp: 10, slots: 1, type: 'incantation', school: 'Fire Monk' },
+  { name: 'Flame, Grant Me Strength',   fp: 28, slots: 1, type: 'incantation', school: 'Fire Monk' },
+  { name: 'Fire Serpent',               fp: 29, slots: 1, type: 'incantation', school: 'Fire Monk' },
+  { name: 'Surge, O Flame!',            fp: 38, slots: 2, type: 'incantation', school: 'Fire Monk' },
   // Black Flame
   { name: 'Black Flame',                  fp: 18, slots: 1, type: 'incantation', school: 'Black Flame' },
   { name: 'Black Flame Blade',            fp: 20, slots: 1, type: 'incantation', school: 'Black Flame' },
@@ -566,6 +617,17 @@ export const INCANTATIONS: SpellEntry[] = [
   { name: 'Inescapable Frenzy',           fp: 30, slots: 1, type: 'incantation', school: 'Frenzied Flame' },
   { name: 'Unendurable Frenzy',           fp: 38, slots: 2, type: 'incantation', school: 'Frenzied Flame' },
   { name: 'Howl of Shabriri',             fp: 25, slots: 1, type: 'incantation', school: 'Frenzied Flame' },
+  // Blood
+  { name: 'Bloodflame Blade',           fp: 20, slots: 1, type: 'incantation', school: 'Blood' },
+  { name: 'Bloodflame Talons',          fp: 12, slots: 1, type: 'incantation', school: 'Blood' },
+  { name: 'Bloodboon',                  fp: 20, slots: 1, type: 'incantation', school: 'Blood' },
+  { name: 'Lifesteal Fist',             fp: 14, slots: 1, type: 'incantation', school: 'Blood' },
+  // Crucible
+  { name: 'Aspects of the Crucible: Horns', fp: 36, slots: 2, type: 'incantation', school: 'Crucible' },
+  { name: 'Aspects of the Crucible: Tail',  fp: 24, slots: 2, type: 'incantation', school: 'Crucible' },
+  // Destined Death
+  { name: 'Black Blade',               fp: 26, slots: 2, type: 'incantation', school: 'Destined Death' },
+  { name: 'Destined Death',            fp: 32, slots: 2, type: 'incantation', school: 'Destined Death' },
   // Servants of Rot
   { name: 'Poison Mist',                  fp: 10, slots: 1, type: 'incantation', school: 'Servants of Rot' },
   { name: 'Scarlet Aeonia',               fp: 30, slots: 1, type: 'incantation', school: 'Servants of Rot' },
@@ -583,8 +645,12 @@ export const INCANTATIONS: SpellEntry[] = [
   { name: 'Messmer Soldier\'s Spear',     fp: 18, slots: 1, type: 'incantation', school: 'Fire Knight',       dlc: true },
   { name: 'Flame of the Contortion',      fp: 22, slots: 1, type: 'incantation', school: "Giants' Flame",     dlc: true },
   { name: 'Divine Bird Feathers',         fp: 20, slots: 1, type: 'incantation', school: 'Erdtree',            dlc: true },
+  { name: 'Heal from Afar',            fp: 48, slots: 1, type: 'incantation', school: 'Erdtree',  dlc: true },
   { name: 'Shadow Bait',                  fp: 14, slots: 1, type: 'incantation', school: 'Servants of Rot',    dlc: true },
   { name: 'Romina\'s Purification',       fp: 40, slots: 2, type: 'incantation', school: 'Servants of Rot',    dlc: true },
+  { name: 'Aspects of the Crucible: Breath', fp: 36, slots: 2, type: 'incantation', school: 'Crucible',         dlc: true },
+  { name: 'Aspects of the Crucible: Wings',  fp: 24, slots: 2, type: 'incantation', school: 'Crucible',         dlc: true },
+  { name: 'Frozen Lightning Spear',    fp: 18, slots: 1, type: 'incantation', school: 'Dragon Cult', dlc: true },
 ];
 
 export const ALL_SPELLS: SpellEntry[] = [...SORCERIES, ...INCANTATIONS];

@@ -25,6 +25,7 @@ interface StoreActions {
   setBossTier: (id: string, tier: BossTier) => void;
   setBossNotes: (id: string, notes: string) => void;
   saveBuild: (build: Omit<BuildSnapshot, 'id'>) => void;
+  updateBuild: (id: string, build: Omit<BuildSnapshot, 'id'>) => void;
   addJournal: (entry: Omit<JournalEntry, 'id'>) => void;
   addTimeline: (event: Omit<TimelineEvent, 'id'>) => void;
   clearJourney: () => void;
@@ -93,6 +94,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     update(s => ({ ...s, builds: [...s.builds, { ...build, id }] }));
   }, [update]);
 
+  const updateBuild = useCallback((id: string, build: Omit<BuildSnapshot, 'id'>) => {
+    update(s => ({ ...s, builds: s.builds.map(b => b.id === id ? { ...build, id } : b) }));
+  }, [update]);
+
   const addJournal = useCallback((entry: Omit<JournalEntry, 'id'>) => {
     const id = `j-${Date.now()}`;
     update(s => ({ ...s, journal: [{ ...entry, id }, ...s.journal] }));
@@ -113,7 +118,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setCharacter, setHours,
       setBossStatus, incrementAttempts, decrementAttempts,
       setBossTier, setBossNotes,
-      saveBuild, addJournal, addTimeline,
+      saveBuild, updateBuild, addJournal, addTimeline,
       clearJourney,
     }}>
       {children}
