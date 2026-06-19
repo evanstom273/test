@@ -1,15 +1,15 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 import type { JourneyStore, Character, BossStatus, BossTier, BuildSnapshot, JournalEntry, TimelineEvent, EventType } from './types';
-import { INITIAL_STATE } from './initial';
+import { EMPTY_STATE } from './initial';
 
-const STORAGE_KEY = 'elden-journey-v1';
+const STORAGE_KEY = 'elden-journey-v2';
 
 function load(): JourneyStore {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw) as JourneyStore;
   } catch {}
-  return INITIAL_STATE;
+  return EMPTY_STATE;
 }
 
 function save(state: JourneyStore) {
@@ -104,7 +104,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, [update]);
 
   const clearJourney = useCallback(() => {
-    update(() => INITIAL_STATE);
+    update(() => EMPTY_STATE);
   }, [update]);
 
   return (
