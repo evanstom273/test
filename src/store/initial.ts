@@ -80,7 +80,7 @@ export const INITIAL_STATE: JourneyStore = {
       mainhand: 'Longsword', offhand: 'Heater Shield',
       helm: 'None', chest: 'Vagabond Knight Armor', gauntlets: 'Vagabond Knight Gauntlets', legs: 'Vagabond Knight Greaves',
       talisman1: '—', talisman2: '—', talisman3: '—', talisman4: '—',
-      cracked: 4, cerulean: 0,
+      cracked: 4, cerulean: 0, memoryStonesHeld: 0, spells: [],
       note: 'Default loadout. Getting a feel for the roll timing.',
     },
     {
@@ -91,7 +91,7 @@ export const INITIAL_STATE: JourneyStore = {
       mainhand: 'Uchigatana +7', offhand: 'Brass Shield',
       helm: 'Iron Helmet', chest: 'Twinned Armor', gauntlets: 'Twinned Gauntlets', legs: 'Twinned Leggings',
       talisman1: 'Crimson Amber Medallion', talisman2: '—', talisman3: '—', talisman4: '—',
-      cracked: 5, cerulean: 0,
+      cracked: 5, cerulean: 0, memoryStonesHeld: 0, spells: [],
       note: 'Switched to katana after Margit. Bleed procs feel strong.',
     },
     {
@@ -102,7 +102,7 @@ export const INITIAL_STATE: JourneyStore = {
       mainhand: 'Rivers of Blood +9', offhand: "Mohgwyn's Sacred Spear +5",
       helm: 'White Mask', chest: "Ronin's Armor", gauntlets: "Ronin's Gauntlets", legs: "Ronin's Greaves",
       talisman1: 'Rotten Winged Sword Insignia', talisman2: "Millicent's Prosthesis", talisman3: "Lord of Blood's Exultation", talisman4: 'Carian Filigreed Crest',
-      cracked: 6, cerulean: 2,
+      cracked: 6, cerulean: 2, memoryStonesHeld: 0, spells: [],
       note: 'Full bleed/arcane pivot. Feels like cheating but the DPS is wild.',
     },
     {
@@ -113,7 +113,8 @@ export const INITIAL_STATE: JourneyStore = {
       mainhand: 'Greatsword of Damnation +10', offhand: 'Golden Order Seal +7',
       helm: 'Bull-Goat Helm', chest: 'Tree Sentinel Armor', gauntlets: 'Tree Sentinel Gauntlets', legs: 'Tree Sentinel Greaves',
       talisman1: "Erdtree's Favor +2", talisman2: "Great-Jar's Arsenal", talisman3: 'Shard of Alexander', talisman4: 'Sacred Scorpion Charm',
-      cracked: 8, cerulean: 2,
+      cracked: 8, cerulean: 2, memoryStonesHeld: 3,
+      spells: ['Golden Vow', 'Flame, Grant Me Strength', 'Erdtree Heal', 'Black Blade'],
       note: 'Faith scaling for holy damage. Tree Sentinel armor for the gravitas.',
     },
   ],

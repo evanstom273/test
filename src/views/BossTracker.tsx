@@ -70,7 +70,7 @@ function TierColumn({ tier, bosses, onDrop }: { tier: BossTier; bosses: BossDefi
       className="rounded-sm border min-h-[120px] transition-colors"
       style={{ background: dragOver ? '#1F1F1F' : '#1A1A1A', borderColor: dragOver ? color : '#2A2925' }}
       onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-      onDragLeave={() => setDragOver(false)}
+      onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(false); }}
       onDrop={e => { e.preventDefault(); setDragOver(false); const id = e.dataTransfer.getData('bossId'); if (id) onDrop(id); }}
     >
       <div className="px-3 py-2 border-b flex items-center gap-2" style={{ borderColor: '#2A2925' }}>

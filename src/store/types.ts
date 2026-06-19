@@ -47,6 +47,8 @@ export interface BuildSnapshot {
   talisman4: string;
   cracked: number;
   cerulean: number;
+  memoryStonesHeld: number;
+  spells: string[];
   note: string;
 }
 
