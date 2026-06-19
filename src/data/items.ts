@@ -591,9 +591,7 @@ export const ALL_SPELLS: SpellEntry[] = [...SORCERIES, ...INCANTATIONS];
 
 // Memory slot calculation
 export const MAX_BASE_SLOTS = 2;
-export const MEMORY_STONES_BASE = 8;   // base game
-export const MEMORY_STONES_DLC  = 2;   // DLC additions
-export const MAX_MEMORY_STONES  = MEMORY_STONES_BASE + MEMORY_STONES_DLC;
+export const MAX_MEMORY_STONES  = 8;
 export const MOON_OF_NOKSTELLA_BONUS = 2;
 
 export function calcMemorySlots(stonesHeld: number, moonEquipped: boolean): number {
@@ -613,6 +611,4 @@ export const MEMORY_STONES_LOCATIONS = [
   { name: 'Memory Stone #6', location: 'Demi-Human Queen Maggie (boss drop), Mt. Gelmir' },
   { name: 'Memory Stone #7', location: "Lenne's Rise, Dragonbarrow, Caelid" },
   { name: 'Memory Stone #8', location: 'Twin Maiden Husks, Roundtable Hold (3,000 runes)' },
-  { name: 'Memory Stone #9', location: 'Shadow of the Erdtree DLC — #1' },
-  { name: 'Memory Stone #10', location: 'Shadow of the Erdtree DLC — #2' },
 ];
