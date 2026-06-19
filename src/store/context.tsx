@@ -30,6 +30,7 @@ interface StoreActions {
   addJournal: (entry: Omit<JournalEntry, 'id'>) => void;
   addTimeline: (event: Omit<TimelineEvent, 'id'>) => void;
   clearJourney: () => void;
+  importJourney: (imported: JourneyStore) => void;
 }
 
 type StoreCtx = { state: JourneyStore } & StoreActions;
@@ -120,6 +121,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     update(() => EMPTY_STATE);
   }, [update]);
 
+  const importJourney = useCallback((imported: JourneyStore) => {
+    update(() => imported);
+  }, [update]);
+
   return (
     <Ctx.Provider value={{
       state,
@@ -127,7 +132,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setBossStatus, incrementAttempts, decrementAttempts, setBossAttempts,
       setBossTier, setBossNotes,
       saveBuild, updateBuild, addJournal, addTimeline,
-      clearJourney,
+      clearJourney, importJourney,
     }}>
       {children}
     </Ctx.Provider>

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useStore, totalDefeated, totalAttempts } from '../store/context';
 import { ALL_BOSSES } from '../data/bosses';
+import type { JourneyStore, BossState } from '../store/types';
 
 type Format = 'json' | 'markdown' | 'pdf';
 
@@ -67,11 +68,45 @@ function toMarkdown(state: ReturnType<typeof useStore>['state']): string {
   return lines.join('\n');
 }
 
+function parseImport(raw: string): JourneyStore {
+  const data = JSON.parse(raw);
+
+  // Reconstruct bossData from the flat bosses array in the export
+  const bossData: Record<string, BossState> = {};
+  if (Array.isArray(data.bosses)) {
+    for (const b of data.bosses) {
+      if (b.id) {
+        bossData[b.id] = {
+          status: b.status ?? 'pending',
+          attempts: b.attempts ?? 0,
+          tier: b.tier ?? 'Unranked',
+          notes: b.notes ?? '',
+        };
+      }
+    }
+  } else if (data.bossData && typeof data.bossData === 'object') {
+    Object.assign(bossData, data.bossData);
+  }
+
+  return {
+    character: data.character ?? null,
+    totalHours: data.totalHours ?? 0,
+    bossData,
+    builds: data.builds ?? [],
+    journal: data.journal ?? [],
+    timeline: data.timeline ?? [],
+  };
+}
+
 export default function Export() {
   const store = useStore();
-  const { state } = store;
+  const { state, importJourney } = store;
   const [format, setFormat] = useState<Format>('json');
   const [copied, setCopied] = useState(false);
+  const [importState, setImportState] = useState<'idle' | 'confirm' | 'error'>('idle');
+  const [importError, setImportError] = useState('');
+  const [pendingImport, setPendingImport] = useState<JourneyStore | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const char = state.character;
   const defeated = totalDefeated(state.bossData);
@@ -113,6 +148,39 @@ export default function Export() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const parsed = parseImport(ev.target?.result as string);
+        setPendingImport(parsed);
+        setImportState('confirm');
+        setImportError('');
+      } catch {
+        setImportState('error');
+        setImportError('Could not parse the file. Make sure it\'s a JSON export from this app.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  }
+
+  function confirmImport() {
+    if (pendingImport) {
+      importJourney(pendingImport);
+      setPendingImport(null);
+      setImportState('idle');
+    }
+  }
+
+  function cancelImport() {
+    setPendingImport(null);
+    setImportState('idle');
+    setImportError('');
   }
 
   const formats: { id: Format; label: string; ext: string; desc: string; icon: string }[] = [
@@ -194,6 +262,73 @@ export default function Export() {
         </div>
 
         <p className="text-center font-body text-xs mt-3" style={{ color: '#3A3835' }}>Your data is stored locally and never leaves your device</p>
+
+        {/* Import */}
+        <div className="mt-12 pt-8 border-t" style={{ borderColor: '#2A2925' }}>
+          <h2 className="font-display text-2xl font-semibold mb-2" style={{ color: '#E8E3D8' }}>Import</h2>
+          <p className="font-body text-sm mb-5 leading-relaxed" style={{ color: '#5A5650' }}>
+            Restore a journey from a previously exported JSON file. This will <span style={{ color: '#C9A876' }}>replace</span> all current data — export first if you want to keep it.
+          </p>
+
+          <input ref={fileRef} type="file" accept=".json,application/json" onChange={handleFileChange} className="hidden" />
+
+          {importState === 'idle' && (
+            <button onClick={() => fileRef.current?.click()}
+              className="px-5 py-3 rounded-sm border font-body text-sm transition-colors hover:border-[#5A5650] hover:text-[#E8E3D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A876]"
+              style={{ borderColor: '#2A2925', color: '#5A5650', background: '#1A1A1A' }}>
+              Choose JSON file…
+            </button>
+          )}
+
+          {importState === 'confirm' && pendingImport && (
+            <div className="rounded-sm border p-4 space-y-4" style={{ background: '#1A1A1A', borderColor: '#C9A876' }}>
+              <div>
+                <p className="font-body text-sm font-semibold mb-1" style={{ color: '#E8E3D8' }}>
+                  Import "{pendingImport.character?.name ?? 'Unknown'}"?
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
+                  {[
+                    { label: 'Bosses tracked', value: Object.values(pendingImport.bossData).filter(b => b.status !== 'pending').length },
+                    { label: 'Build snapshots', value: pendingImport.builds.length },
+                    { label: 'Journal entries', value: pendingImport.journal.length },
+                    { label: 'Timeline events', value: pendingImport.timeline.length },
+                  ].map(({ label, value }) => (
+                    <div key={label}>
+                      <p className="font-display text-xl font-semibold" style={{ color: '#C9A876' }}>{value}</p>
+                      <p className="font-body text-xs" style={{ color: '#5A5650' }}>{label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <p className="font-body text-xs" style={{ color: '#5A5650' }}>
+                Your current journey will be overwritten. This cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button onClick={confirmImport}
+                  className="flex-1 py-2.5 rounded-sm border font-display text-base font-semibold tracking-wide transition-all hover:bg-[#C9A876] hover:text-[#121212] hover:border-[#C9A876] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A876]"
+                  style={{ borderColor: '#C9A876', color: '#C9A876', background: 'transparent' }}>
+                  Import & Replace
+                </button>
+                <button onClick={cancelImport}
+                  className="px-5 py-2.5 rounded-sm border font-body text-sm transition-colors hover:border-[#5A5650] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A876]"
+                  style={{ borderColor: '#2A2925', color: '#5A5650', background: '#1A1A1A' }}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {importState === 'error' && (
+            <div className="rounded-sm border p-4 space-y-3" style={{ background: '#1A1A1A', borderColor: '#8B2E2E' }}>
+              <p className="font-body text-sm" style={{ color: '#8B2E2E' }}>{importError}</p>
+              <button onClick={cancelImport}
+                className="px-4 py-2 rounded-sm border font-body text-sm transition-colors hover:border-[#5A5650] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A876]"
+                style={{ borderColor: '#2A2925', color: '#5A5650', background: '#121212' }}>
+                Try again
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
