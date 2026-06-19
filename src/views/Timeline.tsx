@@ -55,9 +55,11 @@ function TimelineNode({ event, side }: { event: TimelineEvent; side: 'left' | 'r
 }
 
 export default function Timeline() {
-  const { state, addTimeline } = useStore();
+  const { state, addTimeline, setHours } = useStore();
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ type: 'milestone' as EventType, title: '', body: '', location: '', tags: '' });
+  const [editingHours, setEditingHours] = useState(false);
+  const [hoursDraft, setHoursDraft] = useState('');
 
   const sorted = [...state.timeline].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
 
@@ -86,7 +88,32 @@ export default function Timeline() {
           <p className="font-body text-xs tracking-[0.3em] uppercase mb-3" style={{ color: '#5A5650' }}>The Path</p>
           <h1 className="font-display text-5xl sm:text-6xl font-semibold" style={{ color: '#E8E3D8' }}>Journey Timeline</h1>
           <p className="font-body text-sm mt-3" style={{ color: '#5A5650' }}>
-            {state.totalHours} hrs · {sorted.length} events · {defeated} defeated · {attempted} in progress
+            {editingHours ? (
+              <input
+                type="number" min={0} autoFocus
+                value={hoursDraft}
+                onChange={e => setHoursDraft(e.target.value)}
+                onBlur={() => {
+                  const n = parseInt(hoursDraft, 10);
+                  if (!isNaN(n) && n >= 0) setHours(n);
+                  setEditingHours(false);
+                }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+                  if (e.key === 'Escape') setEditingHours(false);
+                }}
+                className="w-16 text-center rounded-sm border outline-none text-sm font-body"
+                style={{ background: '#1A1A1A', borderColor: '#C9A876', color: '#E8E3D8' }}
+              />
+            ) : (
+              <button
+                onClick={() => { setHoursDraft(String(state.totalHours)); setEditingHours(true); }}
+                className="underline decoration-dotted underline-offset-2 hover:text-[#E8E3D8] transition-colors"
+                title="Click to edit hours">
+                {state.totalHours} hrs
+              </button>
+            )}
+            {' · '}{sorted.length} events · {defeated} defeated · {attempted} in progress
           </p>
         </div>
 
