@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef } from 'react'; // useRef used in TierColumn
 import { useStore } from '../store/context';
 import { ALL_BOSSES, AREAS, type BossDefinition } from '../data/bosses';
 import type { BossStatus, BossTier } from '../store/types';
@@ -62,16 +62,28 @@ function BossRow({ boss, onStatusClick, onIncrement, onDecrement }: {
 }
 
 function TierColumn({ tier, bosses, onDrop }: { tier: BossTier; bosses: BossDefinition[]; onDrop: (bossId: string) => void }) {
-  const [dragOver, setDragOver] = useState(false);
+  const colRef = useRef<HTMLDivElement>(null);
   const color = tierColors[tier];
+
+  function setHighlight(on: boolean) {
+    if (!colRef.current) return;
+    colRef.current.style.borderColor = on ? color : '#2A2925';
+    colRef.current.style.background  = on ? '#1F1F1F' : '#1A1A1A';
+  }
 
   return (
     <div
-      className="rounded-sm border min-h-[120px] transition-colors"
-      style={{ background: dragOver ? '#1F1F1F' : '#1A1A1A', borderColor: dragOver ? color : '#2A2925' }}
-      onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-      onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(false); }}
-      onDrop={e => { e.preventDefault(); setDragOver(false); const id = e.dataTransfer.getData('bossId'); if (id) onDrop(id); }}
+      ref={colRef}
+      className="rounded-sm border min-h-[120px]"
+      style={{ background: '#1A1A1A', borderColor: '#2A2925' }}
+      onDragOver={e => { e.preventDefault(); setHighlight(true); }}
+      onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setHighlight(false); }}
+      onDrop={e => {
+        e.preventDefault();
+        setHighlight(false);
+        const id = e.dataTransfer.getData('text/plain');
+        if (id) onDrop(id);
+      }}
     >
       <div className="px-3 py-2 border-b flex items-center gap-2" style={{ borderColor: '#2A2925' }}>
         <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color, boxShadow: `0 0 4px ${color}` }} />
@@ -79,28 +91,24 @@ function TierColumn({ tier, bosses, onDrop }: { tier: BossTier; bosses: BossDefi
         <span className="ml-auto font-body text-xs" style={{ color: '#5A5650' }}>{bosses.length}</span>
       </div>
       <div className="p-2 space-y-1.5 min-h-[80px]">
-        {bosses.length === 0 ? (
-          <p className="text-xs font-body px-1 py-3 text-center" style={{ color: '#2A2925' }}>
-            {dragOver ? 'Drop here' : 'Empty'}
-          </p>
-        ) : (
-          bosses.map(b => (
-            <TierCard key={b.id} boss={b} />
-          ))
-        )}
+        {bosses.length === 0
+          ? <p className="text-xs font-body px-1 py-3 text-center" style={{ color: '#2A2925' }}>Empty</p>
+          : bosses.map(b => <TierCard key={b.id} boss={b} />)
+        }
       </div>
     </div>
   );
 }
 
 function TierCard({ boss }: { boss: BossDefinition }) {
-  const dragRef = useRef<HTMLDivElement>(null);
   const { state } = useStore();
   const bd = state.bossData[boss.id];
 
   return (
-    <div ref={dragRef} draggable
-      onDragStart={e => e.dataTransfer.setData('bossId', boss.id)}
+    <div
+      draggable
+      onDragStart={e => e.dataTransfer.setData('text/plain', boss.id)}
+      onDragOver={e => e.preventDefault()}
       className="px-2 py-1.5 rounded text-xs font-body border cursor-grab active:cursor-grabbing transition-colors hover:border-[#3A3835]"
       style={{ background: '#121212', borderColor: '#2A2925', color: '#E8E3D8' }}>
       <span>{boss.name}</span>
