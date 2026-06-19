@@ -25,7 +25,7 @@ function AppInner() {
       {view === 'bosses' && <BossTracker />}
       {view === 'build' && <BuildTracker />}
       {view === 'journal' && <Journal />}
-      {view === 'export' && <Export />}
+      {view === 'export' && <Export onNavigate={setView} />}
     </div>
   );
 }
