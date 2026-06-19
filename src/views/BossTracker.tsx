@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'; // useRef used in TierColumn
+import { useState, useRef, useCallback } from 'react';
 import { useStore } from '../store/context';
 import { ALL_BOSSES, AREAS, type BossDefinition } from '../data/bosses';
 import type { BossStatus, BossTier } from '../store/types';
@@ -16,14 +16,28 @@ function cycleStatus(current: BossStatus): BossStatus {
   return 'pending';
 }
 
-function BossRow({ boss, onStatusClick, onIncrement, onDecrement }: {
+function BossRow({ boss, onStatusClick, onIncrement, onDecrement, onSetAttempts }: {
   boss: BossDefinition;
   onStatusClick: () => void;
   onIncrement: () => void;
   onDecrement: () => void;
+  onSetAttempts: (n: number) => void;
 }) {
   const { state } = useStore();
   const bd = state.bossData[boss.id] ?? { status: 'pending', attempts: 0, tier: 'Unranked', notes: '' };
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState('');
+
+  const startEdit = useCallback(() => {
+    setDraft(String(bd.attempts));
+    setEditing(true);
+  }, [bd.attempts]);
+
+  function commitEdit() {
+    const n = parseInt(draft, 10);
+    if (!isNaN(n)) onSetAttempts(n);
+    setEditing(false);
+  }
 
   return (
     <div className="flex items-center gap-2 px-3 py-2.5 border-b transition-colors hover:bg-[#1F1F1F]" style={{ borderColor: '#2A2925' }}>
@@ -36,14 +50,28 @@ function BossRow({ boss, onStatusClick, onIncrement, onDecrement }: {
         <p className="font-body text-xs mt-0.5 truncate" style={{ color: '#5A5650' }}>{boss.location}</p>
       </div>
 
-      {/* Attempts counter */}
-      <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
+      {/* Attempts counter — always visible, click count to type */}
+      <div className="flex items-center gap-1 flex-shrink-0">
         <button onClick={onDecrement}
           className="w-5 h-5 rounded text-xs leading-none border transition-colors hover:border-[#5A5650] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C9A876]"
           style={{ borderColor: '#2A2925', color: '#5A5650', background: '#121212' }}>−</button>
-        <span className="font-body text-xs w-8 text-center" style={{ color: bd.attempts > 0 ? '#E8E3D8' : '#3A3835' }}>
-          {bd.attempts > 0 ? `${bd.attempts}×` : '—'}
-        </span>
+        {editing ? (
+          <input
+            type="number" min={0} value={draft}
+            onChange={e => setDraft(e.target.value)}
+            onBlur={commitEdit}
+            onKeyDown={e => { if (e.key === 'Enter') commitEdit(); if (e.key === 'Escape') setEditing(false); }}
+            autoFocus
+            className="w-10 text-center font-body text-xs rounded-sm border outline-none"
+            style={{ background: '#121212', borderColor: '#C9A876', color: '#E8E3D8' }}
+          />
+        ) : (
+          <button onClick={startEdit} title="Click to set exact number"
+            className="font-body text-xs w-10 text-center rounded-sm transition-colors hover:text-[#C9A876]"
+            style={{ color: bd.attempts > 0 ? '#E8E3D8' : '#3A3835' }}>
+            {bd.attempts > 0 ? `${bd.attempts}×` : '—'}
+          </button>
+        )}
         <button onClick={onIncrement}
           className="w-5 h-5 rounded text-xs leading-none border transition-colors hover:border-[#5A5650] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C9A876]"
           style={{ borderColor: '#2A2925', color: '#5A5650', background: '#121212' }}>+</button>
@@ -119,7 +147,7 @@ function TierCard({ boss }: { boss: BossDefinition }) {
 }
 
 export default function BossTracker() {
-  const { state, setBossStatus, incrementAttempts, decrementAttempts, setBossTier } = useStore();
+  const { state, setBossStatus, incrementAttempts, decrementAttempts, setBossAttempts, setBossTier } = useStore();
   const [filter, setFilter] = useState<'all' | 'base' | 'dlc'>('all');
   const [areaFilter, setAreaFilter] = useState<string>('All');
   const [statusFilter, setStatusFilter] = useState<'all' | BossStatus>('all');
@@ -230,7 +258,8 @@ export default function BossTracker() {
                   <BossRow key={boss.id} boss={boss}
                     onStatusClick={() => setBossStatus(boss.id, cycleStatus(state.bossData[boss.id]?.status ?? 'pending'))}
                     onIncrement={() => incrementAttempts(boss.id)}
-                    onDecrement={() => decrementAttempts(boss.id)} />
+                    onDecrement={() => decrementAttempts(boss.id)}
+                    onSetAttempts={n => setBossAttempts(boss.id, n)} />
                 ))
               )}
             </div>

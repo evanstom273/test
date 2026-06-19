@@ -22,6 +22,7 @@ interface StoreActions {
   setBossStatus: (id: string, status: BossStatus) => void;
   incrementAttempts: (id: string) => void;
   decrementAttempts: (id: string) => void;
+  setBossAttempts: (id: string, attempts: number) => void;
   setBossTier: (id: string, tier: BossTier) => void;
   setBossNotes: (id: string, notes: string) => void;
   saveBuild: (build: Omit<BuildSnapshot, 'id'>) => void;
@@ -75,6 +76,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }));
   }, [update]);
 
+  const setBossAttempts = useCallback((id: string, attempts: number) => {
+    update(s => ({
+      ...s,
+      bossData: { ...s.bossData, [id]: { ...s.bossData[id], attempts: Math.max(0, attempts) } },
+    }));
+  }, [update]);
+
   const setBossTier = useCallback((id: string, tier: BossTier) => {
     update(s => ({
       ...s,
@@ -116,7 +124,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     <Ctx.Provider value={{
       state,
       setCharacter, setHours,
-      setBossStatus, incrementAttempts, decrementAttempts,
+      setBossStatus, incrementAttempts, decrementAttempts, setBossAttempts,
       setBossTier, setBossNotes,
       saveBuild, updateBuild, addJournal, addTimeline,
       clearJourney,

@@ -586,7 +586,7 @@ export default function BuildTracker() {
         )}
 
         {/* ── BUILD HISTORY ─────────────────────────────────────── */}
-        {state.builds.length > 1 && (
+        {state.builds.length > 0 && (
           <div>
             <h2 className="font-display text-3xl font-semibold mb-6" style={{ color: '#E8E3D8' }}>Build History</h2>
             <div className="relative">
