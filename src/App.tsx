@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { StoreProvider, useStore } from './store/context';
 import Nav from './components/Nav';
 import CharacterSelect from './views/CharacterSelect';
 import Timeline from './views/Timeline';
@@ -9,8 +10,9 @@ import Export from './views/Export';
 
 export type View = 'character' | 'timeline' | 'bosses' | 'build' | 'journal' | 'export';
 
-export default function App() {
-  const [view, setView] = useState<View>('character');
+function AppInner() {
+  const { state } = useStore();
+  const [view, setView] = useState<View>(state.character ? 'timeline' : 'character');
 
   if (view === 'character') {
     return <CharacterSelect onEnter={() => setView('timeline')} />;
@@ -25,5 +27,13 @@ export default function App() {
       {view === 'journal' && <Journal />}
       {view === 'export' && <Export />}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <StoreProvider>
+      <AppInner />
+    </StoreProvider>
   );
 }
