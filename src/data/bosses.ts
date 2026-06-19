@@ -93,18 +93,20 @@ export const ALL_BOSSES: BossDefinition[] = [
   { id: 'elden-beast',         name: 'Elden Beast',                            location: 'Elden Throne',                  area: 'Leyndell, Ashen Capital',    required: true,  dlc: false },
 
   // ── DLC: SHADOW OF THE ERDTREE ────────────────────────────
+  { id: 'blackgaol-knight',    name: 'Blackgaol Knight',                       location: 'Western Nameless Mausoleum',    area: 'Gravesite Plain',            required: false, dlc: true },
   { id: 'dancing-lion',        name: 'Divine Beast Dancing Lion',              location: 'Belurat Tower Settlement',      area: 'Gravesite Plain',            required: true,  dlc: true },
   { id: 'rellana',             name: 'Rellana, Twin Moon Knight',              location: 'Castle Ensis',                  area: 'Gravesite Plain',            required: true,  dlc: true },
   { id: 'hippo',               name: 'Golden Hippopotamus',                    location: 'Shadow Keep, Entrance',         area: 'Scadu Altus',                required: true,  dlc: true },
   { id: 'gaius',               name: 'Commander Gaius',                        location: 'Shadow Keep Back Gate',         area: 'Scadu Altus',                required: false, dlc: true },
-  { id: 'messmer',             name: 'Messmer the Impaler',                   location: 'Shadow Keep',                   area: 'Scadu Altus',                required: true,  dlc: true },
-  { id: 'romina',              name: 'Romina, Saint of the Bud',              location: 'Church of the Bud',             area: 'Ancient Ruins of Rauh',      required: true,  dlc: true },
+  { id: 'messmer',             name: 'Messmer the Impaler',                    location: 'Shadow Keep',                   area: 'Scadu Altus',                required: true,  dlc: true },
+  { id: 'romina',              name: 'Romina, Saint of the Bud',               location: 'Church of the Bud',             area: 'Ancient Ruins of Rauh',      required: true,  dlc: true },
   { id: 'putrescent',          name: 'Putrescent Knight',                      location: 'Stone Coffin Fissure',          area: 'Cerulean Coast',             required: false, dlc: true },
   { id: 'scadutree-avatar',    name: 'Scadutree Avatar',                       location: 'Scaduview',                     area: 'Cerulean Coast',             required: false, dlc: true },
   { id: 'bayle',               name: 'Bayle the Dread',                        location: "Dragon's Pit, Jagged Peak",     area: 'Jagged Peak',                required: false, dlc: true },
-  { id: 'midra',               name: 'Midra, Lord of Frenzied Flame',         location: "Midra's Manse",                 area: 'Abyssal Woods',              required: false, dlc: true },
-  { id: 'metyr',               name: 'Metyr, Mother of Fingers',              location: 'Cathedral of Manus Metyr',      area: 'Scadu Altus',                required: false, dlc: true },
-  { id: 'consort-radahn',      name: 'Promised Consort Radahn',               location: 'Enir-Ilim',                     area: 'Enir-Ilim',                  required: true,  dlc: true },
+  { id: 'senessax',            name: 'Ancient Dragon Senessax',                location: 'Jagged Peak',                   area: 'Jagged Peak',                required: false, dlc: true },
+  { id: 'midra',               name: 'Midra, Lord of Frenzied Flame',          location: "Midra's Manse",                 area: 'Abyssal Woods',              required: false, dlc: true },
+  { id: 'metyr',               name: 'Metyr, Mother of Fingers',               location: 'Cathedral of Manus Metyr',      area: 'Scadu Altus',                required: false, dlc: true },
+  { id: 'consort-radahn',      name: 'Promised Consort Radahn',                location: 'Enir-Ilim',                     area: 'Enir-Ilim',                  required: true,  dlc: true },
 ];
 
 export const AREAS = [...new Set(ALL_BOSSES.map(b => b.area))];
